@@ -1,0 +1,188 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 1633b5e4defe38596a195afa93469ad662b12819450d83c374d55b77c0d21165
+
+name:           hopl3-code
+version:        0.1.1.0
+description:    Please see the README on GitHub at <https://github.com/Tientuine/hopl3-code#readme>
+homepage:       https://github.com/Tientuine/hopl3-code#readme
+bug-reports:    https://github.com/Tientuine/hopl3-code/issues
+author:         Matthew A Johnson
+maintainer:     Matt.Johnson@marist.edu
+copyright:      2015-2021 Matthew A Johnson
+license:        CC-BY-NC-3.0
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/Tientuine/hopl3-code
+
+library
+  exposed-modules:
+      HOPL.CALL_BY_NEED.DataStructures
+      HOPL.CALL_BY_NEED.Environment
+      HOPL.CALL_BY_NEED.Interp
+      HOPL.CALL_BY_NEED.Lang.Lexer
+      HOPL.CALL_BY_NEED.Lang.Parser
+      HOPL.CALL_BY_NEED.Lang.Syntax
+      HOPL.CALL_BY_NEED.Store
+      HOPL.CALL_BY_REFERENCE.DataStructures
+      HOPL.CALL_BY_REFERENCE.Environment
+      HOPL.CALL_BY_REFERENCE.Interp
+      HOPL.CALL_BY_REFERENCE.Lang.Lexer
+      HOPL.CALL_BY_REFERENCE.Lang.Parser
+      HOPL.CALL_BY_REFERENCE.Lang.Syntax
+      HOPL.CALL_BY_REFERENCE.Store
+      HOPL.CHECKED.Checker
+      HOPL.CHECKED.DataStructures
+      HOPL.CHECKED.Environment
+      HOPL.CHECKED.Interp
+      HOPL.CHECKED.Lang.Lexer
+      HOPL.CHECKED.Lang.Parser
+      HOPL.CHECKED.Lang.Syntax
+      HOPL.CHECKED.Type
+      HOPL.CHECKED.TypeEnv
+      HOPL.CHECKED_STATEMENT.Checker
+      HOPL.CHECKED_STATEMENT.DataStructures
+      HOPL.CHECKED_STATEMENT.Environment
+      HOPL.CHECKED_STATEMENT.Interp
+      HOPL.CHECKED_STATEMENT.Lang.Lexer
+      HOPL.CHECKED_STATEMENT.Lang.Parser
+      HOPL.CHECKED_STATEMENT.Lang.Syntax
+      HOPL.CHECKED_STATEMENT.Store
+      HOPL.CHECKED_STATEMENT.Type
+      HOPL.CHECKED_STATEMENT.TypeEnv
+      HOPL.EXPLICIT_REFS.DataStructures
+      HOPL.EXPLICIT_REFS.Environment
+      HOPL.EXPLICIT_REFS.Interp
+      HOPL.EXPLICIT_REFS.Lang.Lexer
+      HOPL.EXPLICIT_REFS.Lang.Parser
+      HOPL.EXPLICIT_REFS.Lang.Syntax
+      HOPL.EXPLICIT_REFS.Store
+      HOPL.IMPLICIT_REFS.DataStructures
+      HOPL.IMPLICIT_REFS.Environment
+      HOPL.IMPLICIT_REFS.Interp
+      HOPL.IMPLICIT_REFS.Lang.Lexer
+      HOPL.IMPLICIT_REFS.Lang.Parser
+      HOPL.IMPLICIT_REFS.Lang.Syntax
+      HOPL.IMPLICIT_REFS.Store
+      HOPL.INFERRED.DataStructures
+      HOPL.INFERRED.Environment
+      HOPL.INFERRED.Inferrer
+      HOPL.INFERRED.Interp
+      HOPL.INFERRED.Lang.Lexer
+      HOPL.INFERRED.Lang.Parser
+      HOPL.INFERRED.Lang.Syntax
+      HOPL.INFERRED.Substitution
+      HOPL.INFERRED.Type
+      HOPL.INFERRED.TypeEnv
+      HOPL.INFERRED.Unifier
+      HOPL.LET.DataStructures
+      HOPL.LET.Environment
+      HOPL.LET.Interp
+      HOPL.LET.Lang.Lexer
+      HOPL.LET.Lang.Parser
+      HOPL.LET.Lang.Syntax
+      HOPL.LETREC.DataStructures
+      HOPL.LETREC.Environment
+      HOPL.LETREC.Interp
+      HOPL.LETREC.Lang.Lexer
+      HOPL.LETREC.Lang.Parser
+      HOPL.LETREC.Lang.Syntax
+      HOPL.LETREC.Prelude
+      HOPL.MUTABLE_PAIRS.DataStructures
+      HOPL.MUTABLE_PAIRS.Environment
+      HOPL.MUTABLE_PAIRS.Interp
+      HOPL.MUTABLE_PAIRS.Lang.Lexer
+      HOPL.MUTABLE_PAIRS.Lang.Parser
+      HOPL.MUTABLE_PAIRS.Lang.Syntax
+      HOPL.MUTABLE_PAIRS.Store
+      HOPL.PROC.DataStructures
+      HOPL.PROC.Environment
+      HOPL.PROC.Interp
+      HOPL.PROC.Lang.Lexer
+      HOPL.PROC.Lang.Parser
+      HOPL.PROC.Lang.Syntax
+      HOPL.SIMPLE_STATEMENT.DataStructures
+      HOPL.SIMPLE_STATEMENT.Environment
+      HOPL.SIMPLE_STATEMENT.Interp
+      HOPL.SIMPLE_STATEMENT.Lang.Lexer
+      HOPL.SIMPLE_STATEMENT.Lang.Parser
+      HOPL.SIMPLE_STATEMENT.Lang.Syntax
+      HOPL.SIMPLE_STATEMENT.Store
+      HOPL.Types
+  other-modules:
+      Paths_hopl3_code
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , parsec >=3.1
+  default-language: Haskell2010
+
+executable hopl3-repl
+  main-is: Main.hs
+  other-modules:
+      Paths_hopl3_code
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -main-is repl
+  build-depends:
+      base >=4.7 && <5
+    , haskeline >=0.7
+    , hopl3-code
+    , mtl >=2.2
+    , parsec >=3.1
+  default-language: Haskell2010
+
+executable hopl3-run
+  main-is: Main.hs
+  other-modules:
+      Paths_hopl3_code
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -main-is run
+  build-depends:
+      base >=4.7 && <5
+    , haskeline >=0.7
+    , hopl3-code
+    , mtl >=2.2
+    , parsec >=3.1
+  default-language: Haskell2010
+
+test-suite hopl3-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      CallByNeedSpec
+      CallByReferenceSpec
+      CheckedSpec
+      ExplicitRefsSpec
+      ImplicitRefsSpec
+      InferredSpec
+      LetrecSpec
+      LetSpec
+      MutablePairsSpec
+      ProcSpec
+      SimpleStatementSpec
+      Paths_hopl3_code
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , haskeline >=0.7
+    , hopl3-code
+    , mtl >=2.2
+    , parsec >=3.1
+    , tasty
+    , tasty-hspec
+    , tasty-hunit
+  default-language: Haskell2010
