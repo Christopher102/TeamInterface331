@@ -25,7 +25,7 @@ import qualified HOPL.LETREC.Interp as LETREC (interp)
 import qualified HOPL.MUTABLE_PAIRS.Interp as MUTABLE_PAIRS (interp)
 import qualified HOPL.PROC.Interp as PROC (interp)
 import qualified HOPL.SIMPLE_STATEMENT.Interp as SIMPLE_STATEMENT (interp)
-import qualified HOPL.STATPY.Interp as STATPY (interp)
+import qualified HOPL.STATPY.Interp as STATPY (checkAndInterp)
 import HOPL.Types (Interpreter, Source)
 import System.Console.Haskeline
   ( defaultSettings,
@@ -62,7 +62,7 @@ repl = do
                   "CHECKED" -> doInterp CHECKED.checkAndInterp input
                   "INFERRED" -> doInterp INFERRED.checkAndInterp input
                   "CHECKED_STATEMENT" -> doInterp' CHECKED_STATEMENT.checkAndInterp input
-                  "STATPY" -> doInterp' STATPY.checkAndInterp input
+                  "STATPY" -> doInterp STATPY.checkAndInterp input
               )
               >> loop lang
 
@@ -87,7 +87,7 @@ run = do
     then putStrLn "hopl3-run: Missing source file name"
     else do
       prog <- readFile $ head args
-      case LETREC.interp prog of
+      case STATPY.interp prog of
         Left err -> print err
         Right val -> print val
         `catch` (\e -> hPrint stderr (e :: ErrorCall))
