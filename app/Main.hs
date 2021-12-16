@@ -25,6 +25,7 @@ import qualified HOPL.LETREC.Interp as LETREC (interp)
 import qualified HOPL.MUTABLE_PAIRS.Interp as MUTABLE_PAIRS (interp)
 import qualified HOPL.PROC.Interp as PROC (interp)
 import qualified HOPL.SIMPLE_STATEMENT.Interp as SIMPLE_STATEMENT (interp)
+import qualified HOPL.STATPY.Interp as STATPY (interp)
 import HOPL.Types (Interpreter, Source)
 import System.Console.Haskeline
   ( defaultSettings,
@@ -61,6 +62,7 @@ repl = do
                   "CHECKED" -> doInterp CHECKED.checkAndInterp input
                   "INFERRED" -> doInterp INFERRED.checkAndInterp input
                   "CHECKED_STATEMENT" -> doInterp' CHECKED_STATEMENT.checkAndInterp input
+                  "STATPY" -> doInterp' STATPY.checkAndInterp input
               )
               >> loop lang
 

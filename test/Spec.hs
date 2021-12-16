@@ -18,6 +18,7 @@ import qualified LetrecSpec as LETREC
 import qualified MutablePairsSpec as MUTABLE_PAIRS
 import qualified ProcSpec as PROC
 import qualified SimpleStatementSpec as SIMPLE_STATEMENT
+import qualified STATPY as STATPY
 import Test.Tasty.Hspec (hspec)
 
 main = do
@@ -32,3 +33,4 @@ main = do
   hspec CHECKED.spec
   hspec INFERRED.spec
   hspec SIMPLE_STATEMENT.spec
+  hspec STATPY.spec

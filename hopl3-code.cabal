@@ -117,6 +117,16 @@ library
       HOPL.SIMPLE_STATEMENT.Lang.Parser
       HOPL.SIMPLE_STATEMENT.Lang.Syntax
       HOPL.SIMPLE_STATEMENT.Store
+      HOPL.STATPY.DataStructures
+      HOPL.STATPY.Environment
+      HOPL.STATPY.Interp
+      HOPL.STATPY.Lang.Lexer
+      HOPL.STATPY.Lang.Parser
+      HOPL.STATPY.Lang.Syntax
+      HOPL.STATPY.Type
+      HOPL.STATPY.Types
+      HOPL.STATPY.Checker
+      HOPL.STATPY.TypeEnv
       HOPL.Types
   other-modules:
       Paths_hopl3_code
@@ -172,6 +182,7 @@ test-suite hopl3-test
       MutablePairsSpec
       ProcSpec
       SimpleStatementSpec
+      StatPySpec
       Paths_hopl3_code
   hs-source-dirs:
       test
