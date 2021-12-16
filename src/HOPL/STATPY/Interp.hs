@@ -17,13 +17,13 @@ module HOPL.STATPY.Interp
 where
 
 import Data.Either (fromRight)
-import HOPL.STATPY.Checker
+import HOPL.STATPY.Checker ( checkWith )
 import HOPL.STATPY.DataStructures (DenVal, Environment, ExpVal (..), Procedure (..))
 import HOPL.STATPY.Environment (Env (..))
 import HOPL.STATPY.Lang.Parser (ParseError, parseToplevel)
 import HOPL.STATPY.Lang.Syntax (Exp (..), Pgm (..))
 import HOPL.STATPY.TypeEnv (TEnv (..), TypeEnvironment)
-import HOPL.STATPY.Types (Source)
+import HOPL.Types (Source)
 import Prelude hiding (exp)
 
 {- top-level interpreter routines -}
@@ -161,6 +161,11 @@ valueOf (ListExp rands) ρ = ListVal vs
   where
     vs = map (`valueOf` ρ) rands
 
+--LetExp
+valueOf (LetExp t id rhs) ρ = valueOf rhs ρ'
+  where
+    ρ' = extendEnv id v ρ
+    v = valueOf rhs ρ
 -- Integer literal
 valueOf (ConstExp n) _ = NumVal n
 

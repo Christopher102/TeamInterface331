@@ -124,7 +124,6 @@ library
       HOPL.STATPY.Lang.Parser
       HOPL.STATPY.Lang.Syntax
       HOPL.STATPY.Type
-      HOPL.STATPY.Types
       HOPL.STATPY.Checker
       HOPL.STATPY.TypeEnv
       HOPL.Types

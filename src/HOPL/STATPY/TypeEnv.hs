@@ -15,7 +15,7 @@ import Data.List
 import Data.Maybe
 import HOPL.STATPY.DataStructures
 import HOPL.STATPY.Type
-import HOPL.STATPY.Types (Id)
+import HOPL.Types (Id)
 
 nobinding = error . ("No binding found for \"" ++) . (++ "\"")
 

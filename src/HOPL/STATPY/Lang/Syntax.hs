@@ -8,7 +8,7 @@
 module HOPL.STATPY.Lang.Syntax where
 
 import HOPL.STATPY.Type (Type)
-import HOPL.STATPY.Types (Id)
+import HOPL.Types (Id)
 
 newtype Pgm
   = Pgm Exp
@@ -17,7 +17,7 @@ newtype Pgm
 -- For each non-terminal appearing on the right-hand side of a production
 -- we include a parameter type for the corresponding data constructor.
 data Exp
-  = 
+  =
     -- Control expressions
     IfExp Exp Exp Exp
   | -- Function definition
@@ -56,6 +56,8 @@ data Exp
     IsZeroExp Exp
   | -- For Lists
     EmptyListExp Type
+  |
+    LetExp Type Id Exp
   |
     ListExp [Exp]
   | -- Integer literal

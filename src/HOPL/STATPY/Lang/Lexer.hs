@@ -15,11 +15,11 @@ import Text.Parsec.Language (emptyDef)
 import Text.Parsec.String (Parser)
 import qualified Text.Parsec.Token as Tok
 
-checkedLexer :: Tok.TokenParser ()
-checkedLexer =
-  Tok.makeTokenParser $ checkedDef
+statpyLexer :: Tok.TokenParser ()
+statpyLexer =
+  Tok.makeTokenParser $ statpyDef
 
-checkedDef =
+statpyDef =
   emptyDef
     { Tok.commentLine = "//",
       Tok.commentStart = "/*",
@@ -33,7 +33,7 @@ checkedDef =
           "-", 
           "*", 
           "/", 
-          "**", 
+          "^", 
           "%", 
           "sqrt", 
           ">", 
@@ -68,25 +68,25 @@ checkedDef =
     }
 
 integer :: Parser Integer
-integer = Tok.integer checkedLexer
+integer = Tok.integer statpyLexer
 
 symbol :: String -> Parser String
-symbol = Tok.symbol checkedLexer
+symbol = Tok.symbol statpyLexer
 
 parens :: Parser a -> Parser a
-parens = Tok.parens checkedLexer
+parens = Tok.parens statpyLexer
 
 commaSep :: Parser a -> Parser [a]
-commaSep = Tok.commaSep checkedLexer
+commaSep = Tok.commaSep statpyLexer
 
 identifier :: Parser String
-identifier = Tok.identifier checkedLexer
+identifier = Tok.identifier statpyLexer
 
 reserved :: String -> Parser ()
-reserved = Tok.reserved checkedLexer
+reserved = Tok.reserved statpyLexer
 
 reservedOp :: String -> Parser ()
-reservedOp = Tok.reservedOp checkedLexer
+reservedOp = Tok.reservedOp statpyLexer
 
 whiteSpace :: Parser ()
-whiteSpace = Tok.whiteSpace checkedLexer
+whiteSpace = Tok.whiteSpace statpyLexer

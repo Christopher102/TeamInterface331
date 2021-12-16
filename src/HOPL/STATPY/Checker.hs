@@ -12,14 +12,14 @@ import HOPL.STATPY.Environment (Env (..))
 import HOPL.STATPY.Lang.Parser (ParseError, parseToplevel)
 import HOPL.STATPY.Lang.Syntax (Exp (..), Pgm (..))
 import HOPL.STATPY.TypeEnv
-import HOPL.STATPY.Types (Source)
+import HOPL.Types (Source)
 
 check :: Source -> Either ParseError Pgm
 check src = checkWith emptyTenv src
 
 checkWith :: TypeEnvironment -> Source -> Either ParseError Pgm
-checkWith ρ src = case result of
-  Right prog -> typeOfProgram prog ρ `seq` result
+checkWith τ src = case result of
+  Right prog -> typeOfProgram prog τ `seq` result
   _ -> result
   where
     result = parseToplevel src
@@ -35,171 +35,173 @@ reportUnequalTypes t₁ t₂ exp =
       ++ show (show exp)
 
 typeOfProgram :: Pgm -> TypeEnvironment -> Type
-typeOfProgram (Pgm e) ρ = typeOf e ρ
+typeOfProgram (Pgm e) τ = typeOf e τ
 
 typeOf :: Exp -> TypeEnvironment -> Type
 
-typeOf (IfExp exp₁ exp₂ exp₃) ρ
+typeOf (IfExp exp₁ exp₂ exp₃) τ
   | t₁ /= BoolType = reportUnequalTypes BoolType t₁ exp₁
   | t₂ /= t₃ = reportUnequalTypes t₂ t₃ exp₂
   | otherwise = t₂
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
-    t₃ = typeOf exp₃ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
+    t₃ = typeOf exp₃ τ
 
-typeOf (DefExp targ param body) ρ = DefType targ tres
+typeOf (DefExp targ param body) τ = DefType targ tres
   where
-    tres = typeOf body ρ'
-    ρ' = extendTenv param targ ρ
+    tres = typeOf body τ'
+    τ' = extendTenv param targ τ
 
-typeOf (CallExp rator rand) ρ
+typeOf (CallExp rator rand) τ
   | targ == targ' = tres
   | otherwise = reportUnequalTypes targ targ' rand
   where
-    DefType targ tres = typeOf rator ρ
-    targ' = typeOf rand ρ
+    DefType targ tres = typeOf rator τ
+    targ' = typeOf rand τ
 
 --Diff Exp
-typeOf (DiffExp exp₁ exp₂) ρ
+typeOf (DiffExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 -- Add Exp
-typeOf (AddExp exp₁ exp₂) ρ
+typeOf (AddExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 -- Mult Exp 
-typeOf (MultExp exp₁ exp₂) ρ
+typeOf (MultExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --Div Exp
-typeOf (DivExp exp₁ exp₂) ρ
+typeOf (DivExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 -- ExpoExp
-typeOf (ExpoExp exp₁ exp₂) ρ
+typeOf (ExpoExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 -- ModExp
-typeOf (ModExp exp₁ exp₂) ρ
+typeOf (ModExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --Sqrt Exp
-typeOf (SqrtExp exp₁ ) ρ
+typeOf (SqrtExp exp₁ ) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
+    t₁ = typeOf exp₁ τ
   
 -- GreaterExp
-typeOf (GreaterExp exp₁ exp₂) ρ
+typeOf (GreaterExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --Less Exp 
-typeOf (LessExp exp₁ exp₂) ρ
+typeOf (LessExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --GreatEqExp
-typeOf (GreatEqExp exp₁ exp₂) ρ
+typeOf (GreatEqExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --LessEqExp
-typeOf (LessEqExp exp₁ exp₂) ρ
+typeOf (LessEqExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --EqualExp
-typeOf (EqualExp exp₁ exp₂) ρ
+typeOf (EqualExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --NotEqualExp
-typeOf (NotEqualExp exp₁ exp₂) ρ
+typeOf (NotEqualExp exp₁ exp₂) τ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
   | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
   | otherwise = IntType
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
+    t₁ = typeOf exp₁ τ
+    t₂ = typeOf exp₂ τ
 
 --NotExp
-typeOf (NotExp exp₁) ρ
+typeOf (NotExp exp₁) τ
   | t₁ /= BoolType = reportUnequalTypes BoolType t₁ exp₁
   | otherwise = BoolType
   where
-    t₁ = typeOf exp₁ ρ
+    t₁ = typeOf exp₁ τ
 
 --IsZeroExp
-typeOf (IsZeroExp exp) ρ
+typeOf (IsZeroExp exp) τ
   | t == IntType = BoolType
   | otherwise = reportUnequalTypes IntType t exp
   where
-    t = typeOf exp ρ
+    t = typeOf exp τ
 
 --EmptyList
-typeOf (EmptyListExp t) ρ = t 
+typeOf (EmptyListExp t) τ = t 
 
+--LetExp
+typeOf (LetExp t id exp) τ = t
 
 --ListExp
-typeOf (ListExp rands) ρ
+typeOf (ListExp rands) τ
   | t₂ /= ListType = reportUnequalTypes ListType t₂ (ListExp(tail rands))
   | otherwise = ListType 
   where
-    t₁ = typeOf (head rands) ρ
-    t₂ = typeOf (ListExp(tail rands)) ρ
+    t₁ = typeOf (head rands) τ
+    t₂ = typeOf (ListExp(tail rands)) τ
 
 typeOf (ConstExp _) _ = IntType
-typeOf (VarExp x) ρ = applyTenv ρ x
+typeOf (VarExp x) τ = applyTenv τ x

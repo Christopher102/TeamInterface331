@@ -73,7 +73,7 @@ expression =
       <$> (expression <* reservedOp "/")
       <*> expression,
     ExpoExp
-      <$> (expression <* reservedOp "**") 
+      <$> (expression <* reservedOp "^") 
       <*> expression,
     ModExp
       <$> (expression <* reservedOp "%")
@@ -83,11 +83,15 @@ expression =
     GreaterExp
       <$> (expression <* reservedOp ">")
       <*> expression,
+    LetExp
+      <$> typeAnnotation
+      <*> (identifier >> symbol "=")
+      <*> (expression),
     LessExp
       <$> (expression <* reservedOp "<")
       <*> expression,
     GreatEqExp
-      <$> (expression <* reservedOp ">=")
+      <$> (expression <* reservedOp ">=")  
       <*> expression,
     LessEqExp
       <$> (expression <* reservedOp "<=")
@@ -96,7 +100,7 @@ expression =
       <$> (expression <* reservedOp "==")
       <*> expression,
     NotEqualExp
-      <$> (expression <* reservedOp "!=")
+      <$> (expression <* reservedOp "/=")
       <*> expression,
     NotExp
       <$> (reserved "not" >>  expression),

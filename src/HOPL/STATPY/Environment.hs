@@ -12,7 +12,7 @@
 module HOPL.STATPY.Environment (Env (..)) where
 
 import HOPL.STATPY.DataStructures (Binding, DenVal, Environment (..), ExpVal (DefVal), Procedure (..))
-import HOPL.STATPY.Types (Id)
+import HOPL.Types (Id)
 
 {- Interface for an environment (symbol-to-value mapping) -}
 

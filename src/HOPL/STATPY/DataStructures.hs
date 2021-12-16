@@ -16,7 +16,7 @@ module HOPL.STATPY.DataStructures
 where
 
 import HOPL.STATPY.Lang.Syntax (Exp)
-import HOPL.STATPY.Types (Id)
+import HOPL.Types (Id)
 
 -- Denoted values are any expressed value
 type DenVal = ExpVal
