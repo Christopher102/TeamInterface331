@@ -1,10 +1,7 @@
 {-
- -  HOPL/CHECKED/Syntax.hs
+ -  HOPL/STATPY/LANG/Syntax.hs
  -
- -  Reference implementation of the toy language CHECKED from the
- -  EOPL3 textbook by Mitchell Wand.
- -
- -  This module provides the abstract syntax representation for CHECKED.
+ -  This module provides the abstract syntax representation for STATPY.
  -
  -  Authors: Brandon Alker, Nick Petrilli, and Christopher Fioti
  -}
@@ -20,12 +17,13 @@ newtype Pgm
 -- For each non-terminal appearing on the right-hand side of a production
 -- we include a parameter type for the corresponding data constructor.
 data Exp
-  = -- Variable reference
-    VarExp Id
-  | -- Integer literal
-    ConstExp Integer
-  | -- Arithmetic/numeric predicates
-    IsZeroExp Exp
+  = 
+    -- Control expressions
+    IfExp Exp Exp Exp
+  | -- Function definition
+    DefExp Type Id Exp
+  | -- Function call
+    CallExp Exp Exp
   | -- Arithmetic operators
     DiffExp Exp Exp
   | 
@@ -35,11 +33,11 @@ data Exp
   |
     DivExp Exp Exp
   |
-    SqrtExp Exp
-  |
     ExpoExp Exp Exp
   |
     ModExp Exp Exp
+  |
+    SqrtExp Exp
   |
     GreaterExp Exp Exp 
   |
@@ -54,18 +52,14 @@ data Exp
     NotEqualExp Exp Exp
   |
     NotExp Exp
-  | -- Variable declarations
-    LetExp Id Exp
   | 
-    LetrecExp Type Id Id Type Exp Exp
-  | -- Control expressions
-    IfExp Exp Exp Exp
+    IsZeroExp Exp
   | -- For Lists
-    EmptyExp
+    EmptyListExp Type
   |
-    List [Exp]
-  | -- Function definition
-    DefExp Id Type Exp
-  | -- Function call
-    CallExp Exp Exp
+    ListExp [Exp]
+  | -- Integer literal
+    ConstExp Integer
+  |  -- Variable reference
+    VarExp Id
   deriving (Eq, Ord, Show)

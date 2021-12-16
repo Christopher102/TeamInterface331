@@ -1,13 +1,10 @@
 {-
- -  HOPL/CHECKED/DataStructures.hs
- -
- -  Reference implementation of the toy language CHECKED from the
- -  EOPL3 textbook by Mitchell Wand.
+ -  HOPL/STATPY/LANG/DataStructures.hs
  -
  -  This module provides types for representing the values and other
- -  supporting data structures in CHECKED.
+ -  supporting data structures in STATPY.
  -
- -  Author: Matthew A Johnson
+ -  Author: Brandon Alker, Christopher Fioti, and Nicholas Petrilli
  -}
 module HOPL.STATPY.DataStructures
   ( ExpVal (..),
@@ -32,6 +29,7 @@ data ExpVal
   | CharVal {expvalToChar :: Char}
   | DefVal {expvalToDef :: Procedure}
   | ListVal {expvalToList :: [ExpVal]}
+  | FloatVal {expvaltoDef :: Float}
   deriving (Eq)
 
 instance Show ExpVal where
@@ -41,6 +39,7 @@ instance Show ExpVal where
   show (CharVal c) = "(CharVal " ++ show c ++ ")"
   show (DefVal d) = "(DefVal " ++ show d ++ ")"
   show (ListVal vs) = "(ListVal " ++ show vs ++ ")"
+  show (FloatVal fv) = "(FloatVal " ++ show fv ++ ")"
   
 
 {- Recursive "data structure" representation for environments -}

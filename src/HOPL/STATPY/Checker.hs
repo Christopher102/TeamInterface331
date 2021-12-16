@@ -1,12 +1,9 @@
 {-
- -  HOPL/CHECKED/Checker.hs
- -
- -  Reference implementation of the toy language CHECKED from the
- -  EOPL3 textbook by Mitchell Wand.
+ -  HOPL/STATPY/LANG/Checker.hs
  -
  -  This module provides the static type checker implementation.
  -
- -  Author: Matthew A Johnson
+ -  Author: Brandon Alker, Christopher Fioti, and Nicholas Petrilli
  -}
 module HOPL.STATPY.Checker (check, checkWith) where
 
@@ -41,17 +38,27 @@ typeOfProgram :: Pgm -> TypeEnvironment -> Type
 typeOfProgram (Pgm e) ρ = typeOf e ρ
 
 typeOf :: Exp -> TypeEnvironment -> Type
-typeOf (ConstExp _) _ = IntType
-typeOf (VarExp x) ρ = applyTenv ρ x
 
-
-
-
-typeOf (IsZeroExp exp) ρ
-  | t == IntType = BoolType
-  | otherwise = reportUnequalTypes IntType t exp
+typeOf (IfExp exp₁ exp₂ exp₃) ρ
+  | t₁ /= BoolType = reportUnequalTypes BoolType t₁ exp₁
+  | t₂ /= t₃ = reportUnequalTypes t₂ t₃ exp₂
+  | otherwise = t₂
   where
-    t = typeOf exp ρ
+    t₁ = typeOf exp₁ ρ
+    t₂ = typeOf exp₂ ρ
+    t₃ = typeOf exp₃ ρ
+
+typeOf (DefExp targ param body) ρ = DefType targ tres
+  where
+    tres = typeOf body ρ'
+    ρ' = extendTenv param targ ρ
+
+typeOf (CallExp rator rand) ρ
+  | targ == targ' = tres
+  | otherwise = reportUnequalTypes targ targ' rand
+  where
+    DefType targ tres = typeOf rator ρ
+    targ' = typeOf rand ρ
 
 --Diff Exp
 typeOf (DiffExp exp₁ exp₂) ρ
@@ -61,7 +68,6 @@ typeOf (DiffExp exp₁ exp₂) ρ
   where
     t₁ = typeOf exp₁ ρ
     t₂ = typeOf exp₂ ρ
-
 
 -- Add Exp
 typeOf (AddExp exp₁ exp₂) ρ
@@ -115,7 +121,6 @@ typeOf (SqrtExp exp₁ ) ρ
   where
     t₁ = typeOf exp₁ ρ
   
-
 -- GreaterExp
 typeOf (GreaterExp exp₁ exp₂) ρ
   | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
@@ -161,6 +166,15 @@ typeOf (EqualExp exp₁ exp₂) ρ
     t₁ = typeOf exp₁ ρ
     t₂ = typeOf exp₂ ρ
 
+--NotEqualExp
+typeOf (NotEqualExp exp₁ exp₂) ρ
+  | t₁ /= IntType = reportUnequalTypes IntType t₁ exp₁
+  | t₂ /= IntType = reportUnequalTypes IntType t₂ exp₂
+  | otherwise = IntType
+  where
+    t₁ = typeOf exp₁ ρ
+    t₂ = typeOf exp₂ ρ
+
 --NotExp
 typeOf (NotExp exp₁) ρ
   | t₁ /= BoolType = reportUnequalTypes BoolType t₁ exp₁
@@ -168,36 +182,24 @@ typeOf (NotExp exp₁) ρ
   where
     t₁ = typeOf exp₁ ρ
 
-typeOf (IfExp exp₁ exp₂ exp₃) ρ
-  | t₁ /= BoolType = reportUnequalTypes BoolType t₁ exp₁
-  | t₂ /= t₃ = reportUnequalTypes t₂ t₃ exp₂
-  | otherwise = t₂
+--IsZeroExp
+typeOf (IsZeroExp exp) ρ
+  | t == IntType = BoolType
+  | otherwise = reportUnequalTypes IntType t exp
   where
-    t₁ = typeOf exp₁ ρ
-    t₂ = typeOf exp₂ ρ
-    t₃ = typeOf exp₃ ρ
+    t = typeOf exp ρ
 
-typeOf (LetExp var rhs body) ρ = typeOf body ρ'
-  where
-    ρ' = extendTenv var t ρ
-    t = typeOf rhs ρ
+--EmptyList
+typeOf (EmptyListExp t) ρ = t 
 
-typeOf (LetrecExp tres pname param targ pbody body) ρ
-  | tres' == tres = typeOf body ρ'
-  | otherwise = reportUnequalTypes tres tres' pbody
-  where
-    ρ' = extendTenv pname (ProcType targ tres) ρ
-    tres' = typeOf pbody (extendTenv param targ ρ')
 
-typeOf (DefExp param targ body) ρ = DefType targ tres
+--ListExp
+typeOf (ListExp rands) ρ
+  | t₂ /= ListType = reportUnequalTypes ListType t₂ (ListExp(tail rands))
+  | otherwise = ListType 
   where
-    tres = typeOf body ρ'
-    ρ' = extendTenv param targ ρ
-typeOf (CallExp rator rand) ρ
-  | targ == targ' = tres
-  | otherwise = reportUnequalTypes targ targ' rand
-  where
-    DefType targ tres = typeOf rator ρ
-    targ' = typeOf rand ρ
+    t₁ = typeOf (head rands) ρ
+    t₂ = typeOf (ListExp(tail rands)) ρ
 
-{--- Auxiliary functions ---}
+typeOf (ConstExp _) _ = IntType
+typeOf (VarExp x) ρ = applyTenv ρ x

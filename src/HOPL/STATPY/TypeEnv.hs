@@ -1,5 +1,5 @@
 {-
- -  HOPL/CHECKED/Environment.hs
+ -  HOPL/STATPY/Environment.hs
  -
  -  Reference implementation of the toy language CHECKED from the
  -  EOPL3 textbook by Mitchell Wand.

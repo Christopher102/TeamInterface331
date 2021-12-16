@@ -51,19 +51,30 @@ valueOfProgram (Pgm exp) ρ = valueOf exp ρ
 {- semantic reductions for expressions -}
 
 valueOf :: Exp -> Environment -> ExpVal
--- Variable reference
-valueOf (VarExp var) ρ = applyEnv ρ var
--- Integer literal
-valueOf (ConstExp n) _ = NumVal n
--- Arithmetic/numeric predicates
-valueOf (IsZeroExp exp₁) ρ = BoolVal (n == 0)
+
+
+-- Control expressions
+valueOf (IfExp exp₁ exp₂ exp₃) ρ = valueOf exp' ρ
   where
-    NumVal n = valueOf exp₁ ρ
--- Arithmetic operators
+    exp' = case valueOf exp₁ ρ of
+      BoolVal True -> exp₂
+      BoolVal False -> exp₃
+
+-- Function definition
+valueOf (DefExp id param body) ρ = DefVal (ClosedProcedure param body ρ)
+
+-- Function call
+valueOf (CallExp rator rand) ρ = applyProcedure f arg
+  where
+    arg = valueOf rand ρ
+    f = expvalToDef (valueOf rator ρ)
+
+-- DiffExp
 valueOf (DiffExp exp₁ exp₂) ρ = NumVal (n₁ - n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
+
 -- Add Exp
 valueOf (AddExp exp₁ exp₂) ρ = NumVal (n₁ + n₂)
   where
@@ -79,8 +90,9 @@ valueOf (DivExp exp₁ exp₂) ρ = NumVal (n₁ `div` n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
+
 -- Expo Exp
-valueOf (ExpoExp exp₁ exp₂) ρ = NumVal (n₁ ^^ n₂)
+valueOf (ExpoExp exp₁ exp₂) ρ = NumVal (n₁ ^ n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
@@ -90,6 +102,11 @@ valueOf (ModExp exp₁ exp₂) ρ = NumVal (n₁ `mod` n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
+
+--Sqrt Exp 
+valueOf (SqrtExp exp₁) ρ = FloatVal (sqrt n)
+  where
+    FloatVal n = valueOf exp₁ ρ
 
 -- Greater Exp
 valueOf (GreaterExp exp₁ exp₂) ρ = BoolVal (n₁ > n₂)
@@ -103,14 +120,14 @@ valueOf (LessExp exp₁ exp₂) ρ = BoolVal (n₁ < n₂)
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
 
---GreaterEqExp
-valueOf (LessExp exp₁ exp₂) ρ = BoolVal (n₁ >= n₂)
+--GreatEqExp
+valueOf (GreatEqExp exp₁ exp₂) ρ = BoolVal (n₁ >= n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
 
 --LessEqExp
-valueOf (LessExp exp₁ exp₂) ρ = BoolVal (n₁ <= n₂)
+valueOf (LessEqExp exp₁ exp₂) ρ = BoolVal (n₁ <= n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
@@ -122,7 +139,7 @@ valueOf (EqualExp exp₁ exp₂) ρ = BoolVal (n₁ == n₂)
     NumVal n₂ = valueOf exp₂ ρ
 
 --NotEqualExp
-valueOf (EqualExp exp₁ exp₂) ρ = BoolVal (n₁ /= n₂)
+valueOf (NotEqualExp exp₁ exp₂) ρ = BoolVal (n₁ /= n₂)
   where
     NumVal n₁ = valueOf exp₁ ρ
     NumVal n₂ = valueOf exp₂ ρ
@@ -132,31 +149,23 @@ valueOf (NotExp exp₁) ρ = BoolVal (not n₁)
   where
     BoolVal n₁ = valueOf exp₁ ρ
 
---Sqrt Exp 
-valueOf (SqrtExp exp₁) ρ = NumVal (sqrt n)
+-- IsZeroExp
+valueOf (IsZeroExp exp₁) ρ = BoolVal (n == 0)
   where
     NumVal n = valueOf exp₁ ρ
--- Variable declarations
-valueOf (LetExp var rhs body) ρ = valueOf body ρ'
+
+-- EmptyListExp
+valueOf (EmptyListExp t) ρ = ListVal []
+-- ListExp
+valueOf (ListExp rands) ρ = ListVal vs
   where
-    ρ' = extendEnv var v ρ
-    v = valueOf rhs ρ
-valueOf (LetrecExp _ pname param _ pbody body) ρ = valueOf body ρ'
-  where
-    ρ' = extendEnv pname (ProcVal (OpenProcedure param pbody)) ρ
--- Control expressions
-valueOf (IfExp exp₁ exp₂ exp₃) ρ = valueOf exp' ρ
-  where
-    exp' = case valueOf exp₁ ρ of
-      BoolVal True -> exp₂
-      BoolVal False -> exp₃
--- Function definition
-valueOf (DefExp param _ body) ρ = DefVal (ClosedProcedure param body ρ)
--- Function call
-valueOf (CallExp rator rand) ρ = applyProcedure f arg
-  where
-    arg = valueOf rand ρ
-    f = expvalToDef (valueOf rator ρ)
+    vs = map (`valueOf` ρ) rands
+
+-- Integer literal
+valueOf (ConstExp n) _ = NumVal n
+
+-- Variable reference
+valueOf (VarExp var) ρ = applyEnv ρ var
 
 {- Auxiliary function for applying procedure values -}
 applyProcedure :: Procedure -> DenVal -> ExpVal

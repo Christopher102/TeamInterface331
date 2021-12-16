@@ -1,9 +1,9 @@
 {-
- -  Lang/Lexer.hs
+ -  HOPL/STATPY/LANG/Lexer.hs
  -
- -  Implementation for Statpy Language
+ -  Implementation for STATPY Language
  -
- -  This module provides the lexical specification for StatPy
+ -  This module provides the lexical specification for STATPY
  -
  -  Authors: Brandon Alker, Nick Petrilli, and Christopher Fioti
  -}
@@ -42,7 +42,8 @@ checkedDef =
           ">=", 
           "==", 
           "!=", 
-          "not" 
+          "not",
+          ":"
         ],
       Tok.reservedNames =
         [ "int",
@@ -61,7 +62,8 @@ checkedDef =
           "head",
           "tail",
           "import",
-          "for"
+          "for",
+          "sqrt"
         ]
     }
 
